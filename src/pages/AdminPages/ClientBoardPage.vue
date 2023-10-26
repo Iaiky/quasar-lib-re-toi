@@ -11,7 +11,7 @@
 
               <q-separator inset />
 
-              <q-card-section> 152 </q-card-section>
+              <q-card-section> {{ nombreClients }} </q-card-section>
             </q-card>
           </div>
         </div>
@@ -40,18 +40,42 @@
                     <th class="text-right">Prénom</th>
                     <th class="text-right">email</th>
                     <th class="text-right">N° tel</th>
-                    <th class="text-right">Supprimer</th>
+                    <th
+                      class="text-right"
+                      style="
+                        position: sticky;
+                        right: 0;
+                        background: #fff;
+                        z-index: 1;
+                      "
+                    >
+                      Supprimer
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr v-for="item in clients" :key="item.id">
-                    <td class="text-left">{{ item.id }}</td>
+                    <td class="text-left">{{ item.iduser }}</td>
                     <td class="text-right">{{ item.nom }}</td>
                     <td class="text-right">{{ item.prenom }}</td>
                     <td class="text-right">{{ item.email }}</td>
                     <td class="text-right">{{ item.tel }}</td>
-                    <td class="text-right">
-                      <q-btn flat square color="primary" icon="delete" />
+                    <td
+                      class="text-right"
+                      style="
+                        position: sticky;
+                        right: 0;
+                        background: #fff;
+                        z-index: 1;
+                      "
+                    >
+                      <q-btn
+                        flat
+                        square
+                        color="primary"
+                        icon="delete"
+                        @click="supprimerClient(item.iduser)"
+                      />
                     </td>
                   </tr>
                 </tbody>
@@ -65,105 +89,52 @@
 </template>
 
 <script>
-const cli = [
-  {
-    id: "1",
-    nom: "Iaiky",
-    prenom: "N NaeJ G",
-    email: "Iaiky@gmail.com",
-    tel: "+261340877972",
-    cin: "55555555555",
-    date: "26-02-2023",
-  },
-  {
-    id: "2",
-    nom: "Iaiky",
-    prenom: "N NaeJ G",
-    email: "Iaiky@gmail.com",
-    tel: "+261340877972",
-    cin: "55555555555",
-    date: "26-02-2023",
-  },
-  {
-    id: "3",
-    nom: "Iaiky",
-    prenom: "N NaeJ G",
-    email: "Iaiky@gmail.com",
-    tel: "+261340877972",
-    cin: "55555555555",
-    date: "26-02-2023",
-  },
-  {
-    id: "4",
-    nom: "Iaiky",
-    prenom: "N NaeJ G",
-    email: "Iaiky@gmail.com",
-    tel: "+261340877972",
-    cin: "55555555555",
-    date: "26-02-2023",
-  },
-  {
-    id: "5",
-    nom: "Iaiky",
-    prenom: "N NaeJ G",
-    email: "Iaiky@gmail.com",
-    tel: "+261340877972",
-    cin: "55555555555",
-    date: "26-02-2023",
-  },
-  {
-    id: "6",
-    nom: "Iaiky",
-    prenom: "N NaeJ G",
-    email: "Iaiky@gmail.com",
-    tel: "+261340877972",
-    cin: "55555555555",
-    date: "26-02-2023",
-  },
-  {
-    id: "7",
-    nom: "Iaiky",
-    prenom: "N NaeJ G",
-    email: "Iaiky@gmail.com",
-    tel: "+261340877972",
-    cin: "55555555555",
-    date: "26-02-2023",
-  },
-  {
-    id: "8",
-    nom: "Iaiky",
-    prenom: "N NaeJ G",
-    email: "Iaiky@gmail.com",
-    tel: "+261340877972",
-    cin: "55555555555",
-    date: "26-02-2023",
-  },
-  {
-    id: "9",
-    nom: "Iaiky",
-    prenom: "N NaeJ G",
-    email: "Iaiky@gmail.com",
-    tel: "+261340877972",
-    cin: "55555555555",
-    date: "26-02-2023",
-  },
-  {
-    id: "10",
-    nom: "Iaiky",
-    prenom: "N NaeJ G",
-    email: "Iaiky@gmail.com",
-    tel: "+261340877972",
-    cin: "55555555555",
-    date: "26-02-2023",
-  },
-];
+import { ref } from "vue";
+import axios from "axios";
 
 export default {
   // name: "PageName",
-  data() {
-    return {
-      clients: cli,
+
+  setup() {
+    const clients = ref(null);
+    const nombreClients = ref("");
+
+    const fetchDataClient = async () => {
+      try {
+        const response = await axios.get(
+          "https://libere-toi.onrender.com/clients/"
+        );
+        console.warn(response.data);
+        clients.value = response.data;
+        nombreClients.value = clients.value.length;
+      } catch (error) {
+        console.error("Une erreur s'est produite :", error);
+      }
     };
+
+    const supprimerClient = async (id) => {
+      console.log(id);
+      try {
+        const response = await axios.delete(
+          "https://libere-toi.onrender.com/clients/" + id
+        );
+        console.log(response);
+        fetchDataClient();
+      } catch (error) {
+        // Traitement de l'exception
+        console.log("Une erreur s'est produite : " + error);
+      }
+    };
+
+    return {
+      clients,
+      fetchDataClient,
+      supprimerClient,
+      nombreClients,
+    };
+  },
+  created() {
+    this.fetchDataClient();
   },
 };
 </script>

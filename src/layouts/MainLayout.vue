@@ -22,6 +22,13 @@
             @click="this.$router.push('/Categorie')"
           />
           <q-tab name="Temoignage" icon="face_2" label="Témoignage" />
+          <q-tab
+            v-if="type === 1"
+            name="Admin"
+            icon="admin_panel_settings"
+            label="Admin"
+            @click="this.$router.push('/Admin')"
+          />
         </q-tabs>
 
         <q-btn
@@ -131,9 +138,9 @@
     <q-footer reveal elevated class="bg-grey-8 text-white">
       <q-toolbar>
         <q-toolbar-title>
-          <q-avatar @click="getUserInfo">
+          <!-- <q-avatar @click="getUserInfo">
             <img src="https://cdn.quasar.dev/logo-v2/svg/logo-mono-white.svg" />
-          </q-avatar>
+          </q-avatar> -->
           <div>Title</div>
         </q-toolbar-title>
       </q-toolbar>
@@ -151,6 +158,7 @@ export default {
     const rightDrawerOpen = ref(false);
     const router = useRouter();
     const user = ref(null);
+    const type = ref(null);
     const $q = useQuasar();
 
     const getUserInfo = () => {
@@ -158,10 +166,10 @@ export default {
       if (users != null) {
         console.log(users.data[0]);
         user.value = users.data[0];
+        type.value = user.value.type;
+      } else {
+        type.value = 2;
       }
-      // else {
-      //   router.push("/Outer/Login");
-      // }
     };
 
     const logout = () => {
@@ -187,6 +195,7 @@ export default {
       logout,
       getUserInfo,
       baseImagePath: "src/assets/",
+      type,
     };
   },
   created() {

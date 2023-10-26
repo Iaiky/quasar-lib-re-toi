@@ -12,11 +12,12 @@
           class="q-pa-md row items-start q-gutter-xl justify-evenly"
         >
           <q-card
+            v-for="item in category"
+            :key="item.categorie"
             class="my-card"
             flat
             bordered
-            v-for="item in category"
-            :key="item.categorie"
+            @click="dirigerService(item.categorie)"
           >
             <q-img :src="baseImagePath + item.source" />
 
@@ -33,10 +34,14 @@
 <script>
 import { ref } from "vue";
 import axios from "axios";
+import { useRoute } from "vue-router";
+import { useRouter } from "vue-router";
 
 export default {
   setup() {
     const category = ref(null);
+    const route = useRoute();
+    const router = useRouter();
 
     const fetchData = async () => {
       try {
@@ -50,12 +55,17 @@ export default {
       }
     };
 
+    const dirigerService = (id) => {
+      router.push("/Service/" + id);
+    };
+
     return {
       slide: ref("style"),
       lorem:
         "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
       baseImagePath: "src/assets/",
       fetchData,
+      dirigerService,
       category,
     };
   },
@@ -71,4 +81,9 @@ export default {
 .my-card
   width: 100%
   max-width: 250px
+  cursor: pointer
+  transition: background-color 0.3s
+
+.my-card:hover
+  background-color: #f0f0f0
 </style>

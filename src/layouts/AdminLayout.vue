@@ -52,10 +52,10 @@
 
     <q-drawer show-if-above v-model="rightDrawerOpen" side="right" bordered>
       <q-card flat bordered square>
-        <q-img src="https://cdn.quasar.dev/img/parallax2.jpg">
+        <q-img :src="source">
           <div class="absolute-bottom">
             <div class="text-h6">Administrateur</div>
-            <div class="text-subtitle2">Nom de l'admin</div>
+            <div class="text-subtitle2">{{ user.nom }} {{ user.prenom }}</div>
           </div>
         </q-img>
 
@@ -65,6 +65,7 @@
             color="primary"
             icon-right="logout"
             label="Se déconnecter"
+            @click="logout"
           />
         </q-card-actions>
       </q-card>
@@ -90,43 +91,45 @@
 <script>
 import { defineComponent, ref } from "vue";
 import EssentialLink from "components/EssentialLink.vue";
+import { useRouter } from "vue-router";
+import { useQuasar } from "quasar";
 
 const linksList = [
   {
     title: "Tableau de bord",
     caption: "Dashboard",
     icon: "dashboard",
-    link: "http://localhost:9000/Admin",
+    link: "Admin",
   },
   {
     title: "Client",
     caption: "Ajout et suppression de clients",
     icon: "people",
-    link: "http://localhost:9000/Admin/Client",
+    link: "Admin/Client",
   },
   {
     title: "Vendeur",
     caption: "Control des vendeurs",
     icon: "people_outline",
-    link: "http://localhost:9000/Admin/Vendeur",
+    link: "Admin/Vendeur",
   },
   {
     title: "Service",
     caption: "Editer les services",
     icon: "support_agent",
-    link: "http://localhost:9000/Admin/Service",
+    link: "Admin/Service",
   },
   {
     title: "Validation",
     caption: "Vérification des commandes",
     icon: "checklist",
-    link: "http://localhost:9000/Admin/Commande",
+    link: "Admin/Commande",
   },
   {
     title: "Home",
     caption: "Retour dans la page accueil",
     icon: "home",
-    link: "http://localhost:9000",
+    link: "Home",
   },
 ];
 
@@ -138,9 +141,45 @@ export default defineComponent({
   setup() {
     const leftDrawerOpen = ref(false);
     const rightDrawerOpen = ref(false);
+    const router = useRouter();
+    const user = ref(null);
+    const $q = useQuasar();
+    const source = ref("");
+    const baseImagePath = ref("src/assets/");
+
+    const getUserInfo = () => {
+      const users = $q.localStorage.getItem("user-info");
+      if (users != null) {
+        console.log(users.data[0]);
+        user.value = users.data[0];
+
+        source.value = baseImagePath.value + user.value.photoProfil;
+      } else {
+        router.push("/Outer/Login");
+      }
+    };
+
+    const logout = () => {
+      localStorage.clear();
+      const promesseStockage = new Promise((resolve, reject) => {
+        // Vous pouvez ajouter des vérifications de succès ici
+        resolve();
+      });
+
+      // Une fois que la promesse est résolue (le stockage est terminé), effectuer la navigation
+      promesseStockage.then(() => {
+        router.push("/Outer/Login");
+      });
+    };
 
     return {
       essentialLinks: linksList,
+
+      getUserInfo,
+      user,
+      source,
+      baseImagePath,
+      logout,
 
       leftDrawerOpen,
       toggleLeftDrawer() {
@@ -152,6 +191,9 @@ export default defineComponent({
         rightDrawerOpen.value = !rightDrawerOpen.value;
       },
     };
+  },
+  created() {
+    this.getUserInfo();
   },
 });
 </script>

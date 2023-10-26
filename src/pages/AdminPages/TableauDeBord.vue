@@ -11,7 +11,7 @@
 
               <q-separator inset />
 
-              <q-card-section> 152 </q-card-section>
+              <q-card-section> {{ nombreClients }} </q-card-section>
             </q-card>
           </div>
           <div class="col-2 self-center">
@@ -24,7 +24,7 @@
 
               <q-separator inset />
 
-              <q-card-section> 152 </q-card-section>
+              <q-card-section> {{ nombreVendeurs }} </q-card-section>
             </q-card>
           </div>
           <div class="col-2 self-center">
@@ -37,7 +37,7 @@
 
               <q-separator inset />
 
-              <q-card-section> 152 </q-card-section>
+              <q-card-section> {{ nombreService }} </q-card-section>
             </q-card>
           </div>
           <div class="col-3 self-center">
@@ -50,7 +50,7 @@
 
               <q-separator inset />
 
-              <q-card-section> 152 </q-card-section>
+              <q-card-section> {{ nombreCommande }} </q-card-section>
             </q-card>
           </div>
         </div>
@@ -61,7 +61,6 @@
             <q-card class="my-card" flat bordered>
               <q-card-section>
                 <div class="text-h6">Liste des clients</div>
-                <div v-for="item in cli" :key="item.id">{{ item.nom }}</div>
               </q-card-section>
 
               <q-markup-table style="height: 335px">
@@ -83,7 +82,7 @@
                 </thead>
                 <tbody>
                   <tr v-for="item in clients" :key="item.id">
-                    <td class="text-left">{{ item.id }}</td>
+                    <td class="text-left">{{ item.iduser }}</td>
                     <td class="text-right">{{ item.nom }}</td>
                     <td class="text-right">{{ item.prenom }}</td>
                     <td class="text-right">{{ item.email }}</td>
@@ -111,20 +110,20 @@
                   >
                     <th class="text-left">idVendeur</th>
                     <th class="text-right">Nom</th>
-                    <th class="text-right">Prénom</th>
-                    <th class="text-right">email</th>
+                    <th class="text-center">Prénom</th>
+                    <th class="text-center">email</th>
                     <th class="text-right">N° tel</th>
-                    <th class="text-right">CIN</th>
+                    <th class="text-right">N° CIN</th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr v-for="item in clients" :key="item.id">
-                    <td class="text-left">{{ item.id }}</td>
+                  <tr v-for="item in vendeurs" :key="item.id">
+                    <td class="text-left">{{ item.iduser }}</td>
                     <td class="text-right">{{ item.nom }}</td>
                     <td class="text-right">{{ item.prenom }}</td>
                     <td class="text-right">{{ item.email }}</td>
                     <td class="text-right">{{ item.tel }}</td>
-                    <td class="text-right">{{ item.cin }}</td>
+                    <td class="text-right">{{ item.CIN_Passeport }}</td>
                   </tr>
                 </tbody>
               </q-markup-table>
@@ -156,16 +155,18 @@
                     <th class="text-right">Description</th>
                     <th class="text-right">Prix</th>
                     <th class="text-right">Consigne</th>
+                    <th class="text-right">Délai</th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr v-for="item in clients" :key="item.id">
-                    <td class="text-left">{{ item.id }}</td>
-                    <td class="text-right">{{ item.nom }}</td>
-                    <td class="text-right">{{ item.prenom }}</td>
-                    <td class="text-right">{{ item.email }}</td>
-                    <td class="text-right">{{ item.tel }}</td>
-                    <td class="text-right">{{ item.cin }}</td>
+                  <tr v-for="item in services" :key="item.id">
+                    <td class="text-left">{{ item.idservice }}</td>
+                    <td class="text-right">{{ item.titre }}</td>
+                    <td class="text-right">{{ item.idcategorie }}</td>
+                    <td class="text-right" col-auto>{{ item.description }}</td>
+                    <td class="text-right">{{ item.prix }} Ar</td>
+                    <td class="text-right">{{ item.consigne }}</td>
+                    <td class="text-right">{{ item.delai }}</td>
                   </tr>
                 </tbody>
               </q-markup-table>
@@ -196,13 +197,13 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr v-for="item in clients" :key="item.id">
-                    <td class="text-left">{{ item.id }}</td>
-                    <td class="text-right">{{ item.date }}</td>
-                    <td class="text-right">{{ item.nom }}</td>
-                    <td class="text-right">{{ item.prenom }}</td>
-                    <td class="text-right">{{ item.email }}</td>
-                    <td class="text-right">{{ item.tel }}</td>
+                  <tr v-for="item in commandes" :key="item.id">
+                    <td class="text-left">{{ item.idcommande }}</td>
+                    <td class="text-right">{{ item.dateCreation }}</td>
+                    <td class="text-right">{{ item.client }}</td>
+                    <td class="text-right">{{ item.vendeur }}</td>
+                    <td class="text-right">{{ item.service }}</td>
+                    <td class="text-right">{{ item.motif }}</td>
                   </tr>
                 </tbody>
               </q-markup-table>
@@ -215,105 +216,92 @@
 </template>
 
 <script>
-const cli = [
-  {
-    id: "1",
-    nom: "Iaiky",
-    prenom: "N NaeJ G",
-    email: "Iaiky@gmail.com",
-    tel: "+261340877972",
-    cin: "55555555555",
-    date: "26-02-2023",
-  },
-  {
-    id: "2",
-    nom: "Iaiky",
-    prenom: "N NaeJ G",
-    email: "Iaiky@gmail.com",
-    tel: "+261340877972",
-    cin: "55555555555",
-    date: "26-02-2023",
-  },
-  {
-    id: "3",
-    nom: "Iaiky",
-    prenom: "N NaeJ G",
-    email: "Iaiky@gmail.com",
-    tel: "+261340877972",
-    cin: "55555555555",
-    date: "26-02-2023",
-  },
-  {
-    id: "4",
-    nom: "Iaiky",
-    prenom: "N NaeJ G",
-    email: "Iaiky@gmail.com",
-    tel: "+261340877972",
-    cin: "55555555555",
-    date: "26-02-2023",
-  },
-  {
-    id: "5",
-    nom: "Iaiky",
-    prenom: "N NaeJ G",
-    email: "Iaiky@gmail.com",
-    tel: "+261340877972",
-    cin: "55555555555",
-    date: "26-02-2023",
-  },
-  {
-    id: "6",
-    nom: "Iaiky",
-    prenom: "N NaeJ G",
-    email: "Iaiky@gmail.com",
-    tel: "+261340877972",
-    cin: "55555555555",
-    date: "26-02-2023",
-  },
-  {
-    id: "7",
-    nom: "Iaiky",
-    prenom: "N NaeJ G",
-    email: "Iaiky@gmail.com",
-    tel: "+261340877972",
-    cin: "55555555555",
-    date: "26-02-2023",
-  },
-  {
-    id: "8",
-    nom: "Iaiky",
-    prenom: "N NaeJ G",
-    email: "Iaiky@gmail.com",
-    tel: "+261340877972",
-    cin: "55555555555",
-    date: "26-02-2023",
-  },
-  {
-    id: "9",
-    nom: "Iaiky",
-    prenom: "N NaeJ G",
-    email: "Iaiky@gmail.com",
-    tel: "+261340877972",
-    cin: "55555555555",
-    date: "26-02-2023",
-  },
-  {
-    id: "10",
-    nom: "Iaiky",
-    prenom: "N NaeJ G",
-    email: "Iaiky@gmail.com",
-    tel: "+261340877972",
-    cin: "55555555555",
-    date: "26-02-2023",
-  },
-];
+import { ref } from "vue";
+import axios from "axios";
 
 export default {
-  name: "PageName",
-  data() {
-    return {
-      clients: cli,
+  setup() {
+    const clients = ref(null);
+    const nombreClients = ref("");
+    const vendeurs = ref(null);
+    const nombreVendeurs = ref("");
+    const services = ref(null);
+    const nombreService = ref("");
+    const commandes = ref(null);
+    const nombreCommande = ref("");
+
+    const fetchDataClient = async () => {
+      try {
+        const response = await axios.get(
+          "https://libere-toi.onrender.com/clients/"
+        );
+        console.warn(response.data);
+        clients.value = response.data;
+        nombreClients.value = clients.value.length;
+      } catch (error) {
+        console.error("Une erreur s'est produite :", error);
+      }
     };
+
+    const fetchDataVendeur = async () => {
+      try {
+        const response = await axios.get(
+          "https://libere-toi.onrender.com/vendeur/"
+        );
+        console.warn(response.data);
+        vendeurs.value = response.data;
+        nombreVendeurs.value = vendeurs.value.length;
+      } catch (error) {
+        console.error("Une erreur s'est produite :", error);
+      }
+    };
+
+    const fetchDataService = async () => {
+      try {
+        const response = await axios.get(
+          "https://libere-toi.onrender.com/service/"
+        );
+        console.warn(response.data);
+        services.value = response.data;
+        nombreService.value = services.value.length;
+      } catch (error) {
+        console.error("Une erreur s'est produite :", error);
+      }
+    };
+
+    const fetchDataCommande = async () => {
+      try {
+        const response = await axios.get(
+          "https://libere-toi.onrender.com/commande/"
+        );
+        console.warn(response.data);
+        commandes.value = response.data;
+        nombreCommande.value = commandes.value.length;
+      } catch (error) {
+        console.error("Une erreur s'est produite :", error);
+      }
+    };
+
+    return {
+      clients,
+      nombreClients,
+      fetchDataClient,
+      vendeurs,
+      nombreVendeurs,
+      fetchDataVendeur,
+      services,
+      nombreService,
+      fetchDataService,
+      commandes,
+      nombreCommande,
+      fetchDataCommande,
+    };
+  },
+  created() {
+    this.fetchDataClient();
+    this.fetchDataVendeur();
+    this.fetchDataService();
+    this.fetchDataCommande();
   },
 };
 </script>

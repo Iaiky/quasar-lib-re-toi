@@ -13,14 +13,28 @@
             />
             <q-btn round flat>
               <q-avatar>
-                <img :src="baseImagePath + currentConversation.photoProfil" />
-                <!-- <img :src="currentConversation.avatar" /> -->
+                <img
+                  v-if="currentConversation.receveur === user.iduser"
+                  :src="baseImagePath + currentConversation.photoEnvoyeur"
+                />
+                <img
+                  v-if="currentConversation.envoyeur === user.iduser"
+                  :src="baseImagePath + currentConversation.photoReceveur"
+                />
               </q-avatar>
             </q-btn>
 
-            <span class="q-subtitle-1 q-pl-md">
-              {{ currentConversation.nom }}
-              <!-- {{ currentConversation.person }} -->
+            <span
+              v-if="currentConversation.receveur === user.iduser"
+              class="q-subtitle-1 q-pl-md"
+            >
+              {{ currentConversation.nomEnvoyeur }}
+            </span>
+            <span
+              v-if="currentConversation.envoyeur === user.iduser"
+              class="q-subtitle-1 q-pl-md"
+            >
+              {{ currentConversation.nomReceveur }}
             </span>
 
             <q-space />
@@ -54,31 +68,34 @@
                 :key="conversation.idmessage"
                 clickable
                 v-ripple
-                @click="
-                  setCurrentConversation(
-                    index,
-                    user.iduser,
-                    conversation.receveur
-                  )
-                "
+                @click="setCurrentConversation(index)"
               >
                 <q-item-section avatar>
                   <q-avatar>
-                    <img :src="baseImagePath + conversation.photoProfil" />
-                    <!-- <img :src="conversation.avatar" /> -->
+                    <img
+                      v-if="conversation.receveur === user.iduser"
+                      :src="baseImagePath + conversation.photoEnvoyeur"
+                    />
+                    <img
+                      v-if="conversation.envoyeur === user.iduser"
+                      :src="baseImagePath + conversation.photoReceveur"
+                    />
                   </q-avatar>
                 </q-item-section>
 
                 <q-item-section>
                   <q-item-label lines="1">
-                    {{ conversation.nom }}
-                    <!-- {{ conversation.person }} -->
+                    <div v-if="conversation.receveur === user.iduser">
+                      {{ conversation.nomEnvoyeur }}
+                    </div>
+                    <div v-if="conversation.envoyeur === user.iduser">
+                      {{ conversation.nomReceveur }}
+                    </div>
                   </q-item-label>
                   <q-item-label class="conversation__summary" caption>
-                    <q-icon name="check" v-if="conversation.sent" />
-                    <q-icon name="not_interested" v-if="conversation.deleted" />
+                    <!-- <q-icon name="check" v-if="conversation.sent" />
+                    <q-icon name="not_interested" v-if="conversation.deleted" /> -->
                     {{ conversation.msg }}
-                    <!-- {{ conversation.caption }} -->
                   </q-item-label>
                 </q-item-section>
 
@@ -98,21 +115,24 @@
             <div style="width: 70%">
               <div v-for="item in messages" :key="item.idmessage">
                 <q-chat-message
-                  v-if="item.envoyeur === currentConversation.receveur"
-                  :name="item.nomreceveur"
-                  :avatar="baseImagePath + item.photoProfil"
-                  :text="[item.msg]"
-                  bg-color="grey-4"
-                />
-                <q-chat-message
                   v-if="item.envoyeur === user.iduser"
-                  :name="item.nomreceveur"
+                  :name="item.nomenvoyeur"
                   :avatar="baseImagePath + item.photoProfil"
                   :text="[item.msg]"
                   sent
                   text-color="white"
                   bg-color="primary"
                 />
+                <q-chat-message
+                  v-else
+                  :name="item.nomenvoyeur"
+                  :avatar="baseImagePath + item.photoProfil"
+                  :text="[item.msg]"
+                  bg-color="grey-4"
+                />
+              </div>
+              <div v-show="currentConversation == 0" class="text-h5 bold">
+                Pas encore de message.
               </div>
             </div>
           </div>
@@ -200,10 +220,15 @@ export default {
       leftDrawerOpen.value = !leftDrawerOpen.value;
     }
 
-    function setCurrentConversation(index, ide, idr) {
+    function setCurrentConversation(index) {
       currentConversation.value = listMP.value[index];
-      fetchMessages(ide, idr);
-      formData.value.idreceveur = idr;
+      if (currentConversation.value.receveur === user.value.iduser) {
+        fetchMessages(user.value.iduser, currentConversation.value.envoyeur);
+        formData.value.idreceveur = currentConversation.value.envoyeur;
+      } else {
+        fetchMessages(user.value.iduser, currentConversation.value.receveur);
+        formData.value.idreceveur = currentConversation.value.receveur;
+      }
     }
 
     const fetchConversations = async (id) => {
@@ -215,9 +240,14 @@ export default {
         console.log(response.data);
         listMP.value = response.data;
         currentConversation.value = listMP.value[0];
-        formData.value.idreceveur = currentConversation.value.receveur;
 
-        fetchMessages(id, response.data[0].receveur);
+        if (listMP.value[0].receveur === id) {
+          formData.value.idreceveur = currentConversation.value.envoyeur;
+          fetchMessages(id, response.data[0].envoyeur);
+        } else {
+          formData.value.idreceveur = currentConversation.value.receveur;
+          fetchMessages(id, response.data[0].receveur);
+        }
       } catch (error) {
         console.error("Une erreur s'est produite :", error);
       }
@@ -225,7 +255,7 @@ export default {
 
     const fetchMessages = async (idenvoyeur, idreceveur) => {
       try {
-        // console.log(idenvoyeur,idreceveur);
+        console.log(idenvoyeur, idreceveur);
         const response = await axios.get(
           "https://libere-toi.onrender.com/message/" +
             idenvoyeur +

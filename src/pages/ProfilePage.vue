@@ -805,7 +805,7 @@ export default {
   max-width: 350px
 
 .historique
-  width: 40%
+  width: 100%
   // max-width: 350px
   height: 100%
   max-height: 200px

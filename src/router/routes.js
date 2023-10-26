@@ -35,6 +35,8 @@ const routes = [
       { path: "Categorie", component: () => import("pages/CategoriePage.vue") },
       { path: "Profile", component: () => import("pages/ProfilePage.vue") },
       { path: "Message", component: () => import("pages/MessagePage.vue") },
+      { path: "Visite/:id", component: () => import("pages/VisitePage.vue") },
+      { path: "Service/:id", component: () => import("pages/ServicePage.vue") },
     ],
   },
 

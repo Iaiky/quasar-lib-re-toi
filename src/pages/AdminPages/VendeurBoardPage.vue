@@ -13,10 +13,10 @@
 
               <q-separator inset />
 
-              <q-card-section> 152 </q-card-section>
+              <q-card-section> {{ nombreVendeurs }} </q-card-section>
             </q-card>
           </div>
-          <div class="col-2 self-center">
+          <!-- <div class="col-2 self-center">
             <q-card flat bordered class="my-card" style="text-align: center">
               <q-card-section>
                 <div class="text-h6">
@@ -28,16 +28,15 @@
 
               <q-card-section> 152 </q-card-section>
             </q-card>
-          </div>
+          </div> -->
         </div>
       </div>
       <div class="col-4">
         <div class="row justify-evenly">
-          <div class="col-5 self-center">
+          <div class="col-8 self-center">
             <q-card class="my-card" flat bordered>
               <q-card-section>
                 <div class="text-h6">Liste des vendeurs</div>
-                <div v-for="item in cli" :key="item.id">{{ item.nom }}</div>
               </q-card-section>
 
               <q-markup-table style="height: 400px">
@@ -50,7 +49,7 @@
                       background: #fff;
                     "
                   >
-                    <th class="text-left">idClient</th>
+                    <th class="text-left">idVendeur</th>
                     <th class="text-right">Nom</th>
                     <th class="text-center">Prénom</th>
                     <th class="text-center">email</th>
@@ -70,13 +69,13 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr v-for="item in clients" :key="item.id">
-                    <td class="text-left">{{ item.id }}</td>
+                  <tr v-for="item in vendeurs" :key="item.id">
+                    <td class="text-left">{{ item.iduser }}</td>
                     <td class="text-right">{{ item.nom }}</td>
                     <td class="text-right">{{ item.prenom }}</td>
                     <td class="text-right">{{ item.email }}</td>
                     <td class="text-right">{{ item.tel }}</td>
-                    <td class="text-right">{{ item.cin }}</td>
+                    <td class="text-right">{{ item.CIN_Passeport }}</td>
                     <td
                       class="text-right"
                       style="
@@ -86,14 +85,20 @@
                         z-index: 1;
                       "
                     >
-                      <q-btn flat square color="primary" icon="delete" />
+                      <q-btn
+                        flat
+                        square
+                        color="primary"
+                        icon="delete"
+                        @click="supprimerVendeur(item.iduser)"
+                      />
                     </td>
                   </tr>
                 </tbody>
               </q-markup-table>
             </q-card>
           </div>
-          <div class="col-5 self-center">
+          <!-- <div class="col-5 self-center">
             <q-card class="my-card" flat bordered>
               <q-card-section>
                 <div class="text-h6">Liste en attentes de validation</div>
@@ -152,7 +157,7 @@
                 </tbody>
               </q-markup-table>
             </q-card>
-          </div>
+          </div> -->
         </div>
       </div>
     </div>
@@ -160,6 +165,8 @@
 </template>
 
 <script>
+import { ref } from "vue";
+import axios from "axios";
 const cli = [
   {
     id: "1",
@@ -254,10 +261,52 @@ const cli = [
 ];
 
 export default {
-  name: "PageName",
+  setup() {
+    const vendeurs = ref(null);
+    const nombreVendeurs = ref("");
+
+    const fetchDataVendeur = async () => {
+      try {
+        const response = await axios.get(
+          "https://libere-toi.onrender.com/vendeur/"
+        );
+        console.warn(response.data);
+        vendeurs.value = response.data;
+        nombreVendeurs.value = vendeurs.value.length;
+      } catch (error) {
+        console.error("Une erreur s'est produite :", error);
+      }
+    };
+
+    const supprimerVendeur = async (id) => {
+      console.log(id);
+      try {
+        const response = await axios.delete(
+          "https://libere-toi.onrender.com/vendeur/" + id
+        );
+        console.log(response);
+        fetchDataVendeur();
+      } catch (error) {
+        // Traitement de l'exception
+        console.log("Une erreur s'est produite : " + error);
+      }
+    };
+
+    return {
+      vendeurs,
+      fetchDataVendeur,
+      supprimerVendeur,
+      nombreVendeurs,
+    };
+  },
+
+  created() {
+    this.fetchDataVendeur();
+  },
+
   data() {
     return {
-      clients: cli,
+      clientss: cli,
     };
   },
 };
