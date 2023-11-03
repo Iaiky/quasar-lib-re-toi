@@ -10,7 +10,9 @@
 
 const { configure } = require("quasar/wrappers");
 
-module.exports = configure(function (/* ctx */) {
+const path = require("path"); // Importez le module path
+
+module.exports = configure(function (/*ctx*/) {
   return {
     eslint: {
       // fix: true,
@@ -69,7 +71,13 @@ module.exports = configure(function (/* ctx */) {
       // polyfillModulePreload: true,
       distDir: "dist/spa",
 
-      // extendViteConf (viteConf) {},
+      // extendViteConf(viteConf) {
+      //   // Ajoutez l'alias ~assets/ à Vite
+      //   viteConf.resolve.alias["~assets"] = path.resolve(
+      //     __dirname,
+      //     "./src/assets"
+      //   );
+      // },
       // viteVuePluginOptions: {},
 
       // vitePlugins: [

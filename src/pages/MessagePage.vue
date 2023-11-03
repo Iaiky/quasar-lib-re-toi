@@ -2,7 +2,7 @@
   <q-page>
     <div class="WAL position-relative bg-grey-4" :style="style">
       <q-layout view="lHh Lpr lFf" class="WAL__layout shadow-3" container>
-        <q-header elevated>
+        <q-header>
           <q-toolbar class="bg-grey-3 text-black">
             <q-btn
               round
@@ -15,11 +15,11 @@
               <q-avatar>
                 <img
                   v-if="currentConversation.receveur === user.iduser"
-                  :src="baseImagePath + currentConversation.photoEnvoyeur"
+                  :src="currentConversation.photoEnvoyeur"
                 />
                 <img
                   v-if="currentConversation.envoyeur === user.iduser"
-                  :src="baseImagePath + currentConversation.photoReceveur"
+                  :src="currentConversation.photoReceveur"
                 />
               </q-avatar>
             </q-btn>
@@ -74,11 +74,11 @@
                   <q-avatar>
                     <img
                       v-if="conversation.receveur === user.iduser"
-                      :src="baseImagePath + conversation.photoEnvoyeur"
+                      :src="conversation.photoEnvoyeur"
                     />
                     <img
                       v-if="conversation.envoyeur === user.iduser"
-                      :src="baseImagePath + conversation.photoReceveur"
+                      :src="conversation.photoReceveur"
                     />
                   </q-avatar>
                 </q-item-section>
@@ -117,7 +117,7 @@
                 <q-chat-message
                   v-if="item.envoyeur === user.iduser"
                   :name="item.nomenvoyeur"
-                  :avatar="baseImagePath + item.photoProfil"
+                  :avatar="item.photoProfil"
                   :text="[item.msg]"
                   sent
                   text-color="white"
@@ -126,7 +126,7 @@
                 <q-chat-message
                   v-else
                   :name="item.nomenvoyeur"
-                  :avatar="baseImagePath + item.photoProfil"
+                  :avatar="item.photoProfil"
                   :text="[item.msg]"
                   bg-color="grey-4"
                 />
@@ -326,8 +326,6 @@ export default {
       fetchConversations,
       getUserInfo,
       fetchMessages,
-
-      baseImagePath: "src/assets/",
     };
   },
 

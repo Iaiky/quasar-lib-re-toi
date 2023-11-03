@@ -69,7 +69,7 @@
                 :key="item.categorie"
                 @click="dirigerService(item.categorie)"
               >
-                <q-img :src="baseImagePath + item.source" />
+                <q-img :src="item.source" />
 
                 <q-card-section>
                   <div class="text-h6 text-center">{{ item.titre }}</div>
@@ -171,7 +171,6 @@ export default {
       lorem:
         "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
       category,
-      baseImagePath: "src/assets/",
       fetchData,
       dirigerService,
     };

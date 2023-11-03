@@ -78,7 +78,7 @@
           <q-card-section>
             <q-card-section class="text-center bg-secondary">
               <q-avatar size="100px">
-                <q-img :src="baseImagePath + user.photoProfil" ratio="1" />
+                <q-img :src="user.photoProfil" ratio="1" />
               </q-avatar>
               <q-card-section class="text-center">
                 <div class="text-h6">{{ user.nom }}</div>
@@ -110,7 +110,7 @@
 
                   <q-item-section>Message</q-item-section>
                 </q-item>
-                <q-item clickable v-ripple>
+                <q-item clickable v-ripple @click="logout">
                   <q-item-section avatar>
                     <q-avatar
                       rounded
@@ -120,9 +120,7 @@
                     />
                   </q-item-section>
 
-                  <q-item-section @click="logout"
-                    >Se déconnecter</q-item-section
-                  >
+                  <q-item-section>Se déconnecter</q-item-section>
                 </q-item>
               </q-list>
             </q-card-actions>
@@ -194,7 +192,6 @@ export default {
       user,
       logout,
       getUserInfo,
-      baseImagePath: "src/assets/",
       type,
     };
   },

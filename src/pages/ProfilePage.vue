@@ -14,7 +14,7 @@
 
             <q-card-section horizontal>
               <q-card-section class="col-3">
-                <q-img :src="baseImagePath + user.photoProfil" />
+                <q-img :src="user.photoProfil" />
               </q-card-section>
               <q-separator vertical />
               <q-card-section class="col text-center" style="min-width: 75%">
@@ -772,7 +772,6 @@ export default {
       fetchCommandeHistorique,
       listVendeurService,
       listCommandeHistorique,
-      baseImagePath: "src/assets/",
 
       // Historique style
       payer: ref("bg-green-1"),
